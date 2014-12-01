@@ -1,0 +1,34 @@
+#!/bin/sh
+# Copy this to your /etc/init.d directory
+# and use "/etc/init.d/gpio-net-status {start|stop|restart}"
+# Borrowed from wolfpaulus.com
+
+start() {
+    /usr/bin/python3 /etc/gpio-net-status/gpio-net-status.py &
+    echo "GPIO Net Status service started"
+}
+
+stop() {
+    pid=`ps -ef | grep '[p]ython /etc/gpio-net-status/gpio-net-status.py' | awk '{ print $2 }'`
+    echo $pid
+    kill $pid
+    sleep 2
+    echo "GPIO Net Status service killed"
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: /etc/init.d/gpio-net-status {start|stop|restart}"
+    exit 1
+esac
+exit 0
